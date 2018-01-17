@@ -23,6 +23,7 @@ import { AddProjectComponent } from './projects/add-project/add-project.componen
 /* Custom services */
 import { UserService } from './services/users/user.service';
 import { ProjectService } from './services/projects/project.service';
+import { EditProjectComponent } from './projects/edit-project/edit-project.component';
 
 const appRoutes: Routes = [
     { path: '', component: LoginComponent },
@@ -35,6 +36,7 @@ const appRoutes: Routes = [
     { path: 'dashboard/projects', component: ProjectListComponent, canActivate: [AuthGuard] },
     { path: 'dashboard/projects', component: ProjectListComponent, canActivate: [AuthGuard] },
     { path: 'dashboard/project/new', component: AddProjectComponent, canActivate: [AuthGuard] },
+    { path: 'dashboard/project/edit/:handle', component: EditProjectComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: 'login' }
 ];
 
@@ -49,7 +51,8 @@ const appRoutes: Routes = [
     NavbarComponent,
     ProfileComponent,
     AddProjectComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    EditProjectComponent
   ],
   imports: [
     BrowserModule,

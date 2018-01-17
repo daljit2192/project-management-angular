@@ -49,4 +49,8 @@ export class UserService {
     public getSingleUser(){
         return this.http.get(apiRoutes.user.getSingleUser, {headers: this.header}).map((response: Response) => response.json());
     }
+
+    public getAllUsers(){
+        return this.http.get(apiRoutes.user.getAllUsers, {headers: this.header}).map((response: Response) => response.json());
+    }
 }

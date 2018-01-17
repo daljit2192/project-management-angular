@@ -6,10 +6,15 @@ export var apiRoutes = {
         updateUser: apiBaseUrl + "/api/user/update",
         updateUserPassword: apiBaseUrl + "/api/user/update/password",
         loginUser: apiBaseUrl + "/api/login",
-        getSingleUser: apiBaseUrl + "/api/user/get"
+        getSingleUser: apiBaseUrl + "/api/user/get",
+        getAllUsers: apiBaseUrl + "/api/users"
     },
     project: {
         addProject: apiBaseUrl + "/api/project",
-        getProjects: apiBaseUrl + "/api/projects"
+        getProjects: apiBaseUrl + "/api/projects",
+        getProjecthandle: apiBaseUrl + "/api/project/handle",
+        getAllProjects: apiBaseUrl + "/api/projects",
+        getSingleProject: apiBaseUrl + "/api/project",
+        updateProject: apiBaseUrl + "/api/project/update"
     }
 }    

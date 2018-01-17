@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ProjectService } from '../../services/projects/project.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/users/user.service';
 
 declare var $:any;
 
@@ -13,11 +14,26 @@ declare var $:any;
 })
 export class AddProjectComponent implements OnInit {
 
-	public projectDetails = { name:"", handle:"", status:0 };
+	public projectDetails = { name:"", handle:"", status:1, privacy_status:0, users:"" };
+	public users = [];
 
-	constructor(private router:Router, private _location:Location, private _projectService:ProjectService, private toastr:ToastrService) { }
+	constructor(private _userService:UserService, private router:Router, private _location:Location, private _projectService:ProjectService, private toastr:ToastrService) { 
+		this._userService.getAllUsers().subscribe(
+			response=>{
+				this.users = response.users;
+
+			},
+			error=>{},
+		);
+	}
 
 	ngOnInit() {
+	}
+
+	ngAfterViewInit(){
+		$("select[name='assignees']").select2({
+			placeholder:"Select Assignees"
+		});
 	}
 
 	/* Function that will send back to previous location */
@@ -25,9 +41,35 @@ export class AddProjectComponent implements OnInit {
 		this._location.back();
 	}
 
+	public getProjectHandle(){
+		if(this.projectDetails.name == ""){
+			return false;
+		}
+		$(".loading").css("display","block");
+		
+		/* project service function that will get handle for project from backend */
+		this._projectService.getProjecthandle(this.projectDetails.name).subscribe(
+			response => {
+				if(response.status){
+					$(".loading").css("display","none");
+					this.projectDetails.handle = response.handle;
+				} else {
+					
+				}
+			},
+			error => { console.log(error); }
+		);
+	}
+
 	/* Function that will add new project in database */
 	public addProject(){
 		let detailsStatus = this.validateDetails();
+
+		this.projectDetails.privacy_status = parseInt($("input[name='optradio']:checked").val());
+
+		if($("select[name='assignees']").val()!== null && $("select[name='assignees']").val()!==""){
+			this.projectDetails.users = $("select[name='assignees']").val().join(",");
+		}
 		if(detailsStatus){
 			$("body").find(".loading").show();
 			

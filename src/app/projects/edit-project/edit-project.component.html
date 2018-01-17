@@ -2,7 +2,7 @@
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">New Project</h1>
+				<h1 class="page-header">Update Project</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 
@@ -11,19 +11,19 @@
 				<form class="form-project">
 					<div class="form-group">
 						<label for="usr">Name:</label>
-						<input [(ngModel)] = "projectDetails.name" (blur) = "getProjectHandle()" name="name" type="text" placeholder="Project Name" class="form-control" />
+						<input [(ngModel)] = "projectDetails.name" name="name" type="text" placeholder="Project Name" class="form-control" />
 					</div>
 					<div class="form-group">
 						<label for="usr">Handle:</label>
-						<input [(ngModel)] = "projectDetails.handle" name="handle" placeholder="Project Handle" type="text" class="form-control" />
+						<input [(ngModel)] = "projectDetails.handle" (blur) = "validateHandle()" name="handle" placeholder="Project Handle" type="text" class="form-control" />
 					</div>
 					<div class="form-group">
 						<label for="usr">Project Status:</label><br>
 						<label class="radio-inline">
-							<input type="radio" checked="checked" value="0" name="optradio">Private
+							<input type="radio" [checked]="projectDetails.privacy_status === 0" value="0"  name="optradio">Private
 						</label>
 						<label class="radio-inline">
-							<input type="radio" value="1"  name="optradio">Public
+							<input type="radio" [checked]="projectDetails.privacy_status === 1" value="1"  name="optradio">Public
 						</label>           
 					</div>	
 					<div class="form-group">
@@ -33,7 +33,7 @@
 						</select>
 					</div>
 					<div class="form-group">	
-						<button type="button" class="btn btn-primary" (click) = "addProject()">Create Project</button>			
+						<button type="button" class="btn btn-primary" (click) = "updateProject()">Update</button>			
 						<button type="button" class="btn btn-secondary" (click) = "back()">Cancel</button>
 					</div>						
 				</form>

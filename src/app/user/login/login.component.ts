@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
 						localStorage.setItem('_login_token', response._JWTtoken);
 						$("body").find(".loading").hide();
 						this.toastr.success('Login Successfull');	
-						this.router.navigate(['/dashboard']);
+						this.router.navigateByUrl('/dashboard');
 					} else {
 						$("body").find(".loading").hide();
 						if (typeof response.errors === "object") {

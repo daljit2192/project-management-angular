@@ -16,8 +16,22 @@ export class ProjectService {
     }
 
     public addProject(projectDetails:any){
-
         return this.http.post(apiRoutes.project.addProject,JSON.stringify(projectDetails), {headers: this.header}).map((response: Response) => response.json());
     }
 
+    public getProjecthandle(projectName){
+        return this.http.get(apiRoutes.project.getProjecthandle+"/"+projectName, {headers: this.header}).map((response: Response) => response.json());
+    }
+
+    public getAllProjects(){
+        return this.http.get(apiRoutes.project.getAllProjects, {headers: this.header}).map((response: Response) => response.json());
+    }
+
+    public getSingleProject(projectHandle:string){
+        return this.http.get(apiRoutes.project.getSingleProject+"/"+projectHandle, {headers: this.header}).map((response: Response) => response.json());
+    }
+
+    public updateProject(projectDetails:any){
+        return this.http.post(apiRoutes.project.updateProject,JSON.stringify(projectDetails), {headers: this.header}).map((response: Response) => response.json());
+    }
 }
