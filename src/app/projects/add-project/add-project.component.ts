@@ -41,6 +41,13 @@ export class AddProjectComponent implements OnInit {
 		this._location.back();
 	}
 
+	public validateHandle(){
+		if(this.projectDetails.handle!==""){
+			this.projectDetails.handle = this.projectDetails.handle.toLowerCase();
+			this.projectDetails.handle = this.projectDetails.handle.replace(" ","-");
+		}
+	}
+
 	public getProjectHandle(){
 		if(this.projectDetails.name == ""){
 			return false;

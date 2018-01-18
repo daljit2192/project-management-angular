@@ -14,8 +14,8 @@
 						<input [(ngModel)] = "projectDetails.name" (blur) = "getProjectHandle()" name="name" type="text" placeholder="Project Name" class="form-control" />
 					</div>
 					<div class="form-group">
-						<label for="usr">Handle:</label>
-						<input [(ngModel)] = "projectDetails.handle" name="handle" placeholder="Project Handle" type="text" class="form-control" />
+						<label for="usr">Handle:</label> 
+						<input [(ngModel)] = "projectDetails.handle" (blur) = "validateHandle()" name="handle" placeholder="Project Handle" type="text" class="form-control" />
 					</div>
 					<div class="form-group">
 						<label for="usr">Project Status:</label><br>

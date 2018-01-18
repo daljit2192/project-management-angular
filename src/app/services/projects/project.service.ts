@@ -34,4 +34,8 @@ export class ProjectService {
     public updateProject(projectDetails:any){
         return this.http.post(apiRoutes.project.updateProject,JSON.stringify(projectDetails), {headers: this.header}).map((response: Response) => response.json());
     }
+
+    public deleteProject(handleName:any){
+        return this.http.delete(apiRoutes.project.deleteProject+"/"+handleName, {headers: this.header}).map((response: Response) => response.json());
+    }
 }
