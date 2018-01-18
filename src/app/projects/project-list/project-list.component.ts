@@ -19,6 +19,13 @@ export class ProjectListComponent implements OnInit {
 	public noProjectFound:boolean;
 	public currentProjectHandle:string;
 	constructor(private toastr:ToastrService, private _projectService:ProjectService, private router:Router) {
+		this.getAllProjects();
+	}
+
+	ngOnInit() {}
+
+	/* Function that will get all projects of the current user and also projects which are asigned to login user */
+	public getAllProjects(){
 		$(".loading").css("display","block");
 		this._projectService.getAllProjects().subscribe(
 			response=>{
@@ -35,11 +42,10 @@ export class ProjectListComponent implements OnInit {
 			error=>{
 
 			},
-		);
+			);
 	}
 
-	ngOnInit() {}
-
+	/* Function that will delete project and its assignees form database */
 	public deleteProject(){
 		$(".loading").css("display","block");
 		this._projectService.deleteProject(this.currentProjectHandle).subscribe(
@@ -48,6 +54,10 @@ export class ProjectListComponent implements OnInit {
 					$(".loading").css("display","none");
 					this.toastr.success(response.message);
 					$("table").find("."+this.currentProjectHandle).remove();
+					if($("table").find("tr").length == 1){
+						this.projectDetails = false;
+						this.noProjectFound = true;
+					}
 				} else {
 					this.toastr.error(response.message);
 				}
@@ -55,7 +65,7 @@ export class ProjectListComponent implements OnInit {
 			error=>{
 
 			},
-		)
+			)
 	}
 
 }

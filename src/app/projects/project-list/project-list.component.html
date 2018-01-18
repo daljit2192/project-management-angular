@@ -31,9 +31,13 @@
                     <i class="fa fa-pencil-square-o"></i>
                   </a>
                   <!--delete icon-->              
-                  <a class="delete" data-toggle="modal" data-target="#deleteProject" style="cursor:pointer;" (click) = "currentProjectHandle = project.handle"><i class="fa fa-trash"></i></a>
+                  <a class="delete" data-toggle="modal" data-target="#deleteProject" style="cursor:pointer;" (click) = "currentProjectHandle = project.handle">
+                    <i class="fa fa-trash"></i>
+                  </a>
                   <!--view icon-->
-                  <!-- <a href="#myModal-d" class="view" data-toggle="modal" data-target="#myModal-d"><i class="fa fa-eye"></i></a> -->
+                  <a style="cursor:pointer;" class="view" data-toggle="modal" data-target="#viewProject">
+                    <i class="fa fa-eye"></i>
+                  </a>
                   <!-- Large modal -->
                 </td>
               </tr>
@@ -56,6 +60,7 @@
   </div>
 </div>
 
+<!-- Delete project confirmation model -->
 <div id="deleteProject" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -71,6 +76,28 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal" (click) = "deleteProject()">Continue</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- View project details model -->
+<div id="viewProject" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Project Details</h4>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
       </div>
     </div>
 

@@ -17,5 +17,8 @@ export var apiRoutes = {
         getSingleProject: apiBaseUrl + "/api/project",
         updateProject: apiBaseUrl + "/api/project/update",
         deleteProject: apiBaseUrl + "/api/project"
+    },
+    status:{
+        getAllStatuses:apiBaseUrl + "/api/statuses"
     }
 }    

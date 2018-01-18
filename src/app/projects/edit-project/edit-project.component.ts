@@ -17,10 +17,12 @@ export class EditProjectComponent implements OnInit {
 	public projectDetails = {id:0, name:"", handle:"", status:1, privacy_status:0, users:"" };
 	public users = [];
 	public projectAssignees = [];
+	public statuses = [];
 
 	constructor(private _userService:UserService, private router:Router, private _location:Location, private _projectService:ProjectService, private toastr:ToastrService) { 
 		this.getAllUsers();
 		this.getProjectByHandle();
+		this.getStatus();
 	}
 
 	ngAfterViewInit(){
@@ -42,6 +44,19 @@ export class EditProjectComponent implements OnInit {
 					this.projectDetails.status = response.project.status;
 					this.projectDetails.privacy_status = response.project.privacy_status;
 					this.setAssignees(response.project.assignees);
+				} else {
+					this.router.navigate(["/dashboard/projects"]);
+				}
+			},
+			error=>{},
+		);
+	}
+
+	public getStatus(){
+		this._projectService.getAllStatuses().subscribe(
+			response=>{
+				if(response.status){
+					this.statuses = response.statuses;
 				} else {
 					this.router.navigate(["/dashboard/projects"]);
 				}
@@ -74,7 +89,9 @@ export class EditProjectComponent implements OnInit {
 
 	public updateProject(){
 		let detailsStatus = this.validateDetails();
-
+		if(!detailsStatus){
+			return false;
+		}
 		this.projectDetails.privacy_status = parseInt($("input[name='optradio']:checked").val());
 
 		if($("select[name='assignees']").val()!== null && $("select[name='assignees']").val()!==""){
@@ -100,6 +117,8 @@ export class EditProjectComponent implements OnInit {
 			this.toastr.error('Please enter project name.');	
 		} else if(this.projectDetails.handle == ""){
 			this.toastr.error('Project handle cannot be empty.');	
+		} else if(this.projectDetails.status == 0){
+			this.toastr.error('Select valid status of project.');	
 		} else {
 			return true;
 		}

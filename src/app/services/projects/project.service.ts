@@ -38,4 +38,8 @@ export class ProjectService {
     public deleteProject(handleName:any){
         return this.http.delete(apiRoutes.project.deleteProject+"/"+handleName, {headers: this.header}).map((response: Response) => response.json());
     }
+
+    public getAllStatuses(){
+        return this.http.get(apiRoutes.status.getAllStatuses, {headers: this.header}).map((response: Response) => response.json());
+    }
 }
