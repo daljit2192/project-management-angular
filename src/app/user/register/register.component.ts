@@ -14,8 +14,11 @@ declare var $:any;
 export class RegisterComponent implements OnInit {
 
 	public userDetails = { firstName:"", lastName:"", email:"", password:"", confirmPassword:"", company_name:"" };
+	public termsConditions:boolean = false;
 
-	constructor(private _location: Location, private toastr:ToastrService, private router:Router, private _userService:UserService) { }
+	constructor(private _location: Location, private toastr:ToastrService, private router:Router, private _userService:UserService) { 
+
+	}	
 
 	/* Function that will send back to previous location */
 	public back(){
@@ -52,6 +55,7 @@ export class RegisterComponent implements OnInit {
 
 	/* FUnction that will check for empty values in userDetails */
 	validateDetails(userDetails){
+		
 		if(this.userDetails.firstName == ""){
 			this.toastr.error('Please enter first name');	
 		} else if(this.userDetails.lastName == ""){
@@ -64,6 +68,8 @@ export class RegisterComponent implements OnInit {
 			this.toastr.error('Please enter confirm password');	
 		} else if(this.userDetails.company_name == ""){
 			this.toastr.error('Please enter Company Name');	
+		} else if(!this.termsConditions){
+			this.toastr.error('Please accept our terms and conditions to complete registeration.');	
 		} else {
 			if(this.userDetails.confirmPassword !== this.userDetails.password){
 				this.toastr.error('Please match your password');	

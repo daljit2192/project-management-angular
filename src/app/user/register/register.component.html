@@ -8,11 +8,11 @@
                     <input type="text" name="firstName" [(ngModel)]="userDetails.firstName" class="form-control" placeholder="First Name" required autofocus>
                     <input type="text" name="lastName" [(ngModel)]="userDetails.lastName" class="form-control" placeholder="Last Name" required autofocus>
                     <input type="email" name="email" [(ngModel)]="userDetails.email" class="form-control" placeholder="Email" required autofocus>
-                    <input type="text" name="company_name" [(ngModel)]="userDetails.company_name" class="form-control" placeholder="COmpany Name" required autofocus>
+                    <input type="text" name="company_name" [(ngModel)]="userDetails.company_name" class="form-control" placeholder="Company Name" required autofocus>
                     <input type="password" name="password" [(ngModel)]="userDetails.password" class="form-control" placeholder="Password" required>
                     <input type="password" name="confirmPassword" [(ngModel)]="userDetails.confirmPassword" class="form-control" placeholder="Confirm Password" required>
                     <label class="checkbox pull-left agree">
-                        <input type="checkbox" value="remember-me">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy.</a>
+                        <input type="checkbox" class="terms" [checked]="termsConditions" (change)="termsConditions = !termsConditions" >I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy.</a>
                     </label>
                     <button class="btn btn-lg btn-primary btn-block" type="button" (click)="registerUser()" >
                     Sign Up For Free</button>

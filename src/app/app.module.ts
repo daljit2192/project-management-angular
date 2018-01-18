@@ -26,22 +26,22 @@ import { ProjectService } from './services/projects/project.service';
 import { EditProjectComponent } from './projects/edit-project/edit-project.component';
 
 const appRoutes: Routes = [
-    { path: '', component: LoginComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
-    { path: 'forgot-password', component: ForgotPasswordComponent },
-    { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-    { path: 'user/profile', component: ProfileComponent, canActivate: [AuthGuard]},
-    { path: 'user/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
-    { path: 'dashboard/projects', component: ProjectListComponent, canActivate: [AuthGuard] },
-    { path: 'dashboard/projects', component: ProjectListComponent, canActivate: [AuthGuard] },
-    { path: 'dashboard/project/new', component: AddProjectComponent, canActivate: [AuthGuard] },
-    { path: 'dashboard/project/edit/:handle', component: EditProjectComponent, canActivate: [AuthGuard] },
-    { path: '**', redirectTo: 'login' }
+{ path: '', component: LoginComponent },
+{ path: 'login', component: LoginComponent },
+{ path: 'register', component: RegisterComponent },
+{ path: 'forgot-password', component: ForgotPasswordComponent },
+{ path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
+{ path: 'user/profile', component: ProfileComponent, canActivate: [AuthGuard]},
+{ path: 'user/change-password', component: ChangePasswordComponent, canActivate: [AuthGuard]},
+{ path: 'dashboard/projects', component: ProjectListComponent, canActivate: [AuthGuard] },
+{ path: 'dashboard/projects', component: ProjectListComponent, canActivate: [AuthGuard] },
+{ path: 'dashboard/project/new', component: AddProjectComponent, canActivate: [AuthGuard] },
+{ path: 'dashboard/project/edit/:handle', component: EditProjectComponent, canActivate: [AuthGuard] },
+{ path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({
-  declarations: [
+    declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
@@ -53,21 +53,24 @@ const appRoutes: Routes = [
     AddProjectComponent,
     ChangePasswordComponent,
     EditProjectComponent
-  ],
-  imports: [
+    ],
+    imports: [
     BrowserModule,
     FormsModule,
     CommonModule,
     HttpModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+        maxOpened: 1,
+        preventDuplicates:true
+    }),
     RouterModule.forRoot(appRoutes),
-  ],
-  providers: [
+    ],
+    providers: [
     UserService,
     ProjectService,
     AuthGuard
-  ],
-  bootstrap: [AppComponent]
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
