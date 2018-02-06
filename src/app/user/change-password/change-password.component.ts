@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/users/user.service';
+import { NgProgressService } from 'ngx-progressbar';
 
 declare var $:any;
 
@@ -16,7 +17,7 @@ export class ChangePasswordComponent implements OnInit {
 
 	public passwordDetails = { currentPassword:"", newPassword:"", confirmPassword:"" };
 
-	constructor(private _userService:UserService, private router:Router, private _location: Location, private toastr:ToastrService) {
+	constructor(private _progressService:NgProgressService, private _userService:UserService, private router:Router, private _location: Location, private toastr:ToastrService) {
 
 	}
 
@@ -29,17 +30,17 @@ export class ChangePasswordComponent implements OnInit {
 	change_password(){
 		let detailsStatus = this.validateDetails(this.passwordDetails);
 		if(detailsStatus){
-			$("body").find(".loading").show();
+			$("#overlay").show();
+			this._progressService.start();
 
 			/* User service function that will update new password in database */
 			this._userService.changePassword(this.passwordDetails).subscribe(
 				response => {
 					if(response.status){
-						$("body").find(".loading").hide();
 						this.toastr.success(response.message);	
 						this.router.navigate(['/dashboard']);
 					} else {
-						$("body").find(".loading").hide();
+						this._progressService.done();
 						if (typeof response.errors === "object") {
 							for (var errorKey in response.errors) {
 								this.toastr.error(response.errors[errorKey][0]);	
@@ -49,8 +50,19 @@ export class ChangePasswordComponent implements OnInit {
 							this.toastr.error(response.message);
 						}
 					}
+					this._progressService.done();
+					$("#overlay").show()
 				},
-				error => { console.log(error); }
+				error => { 
+					let self = this;
+					if (error.status === 401) {
+						this.toastr.error("Login Session expired");
+						localStorage.clear();
+						setTimeout(function () {
+							self.router.navigateByUrl("login");
+						}, 2000);
+					}
+				}
 				);
 		}
 	}

@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/users/user.service';
 import { Location } from '@angular/common';
+import { NgProgressService } from 'ngx-progressbar';
 
 declare let $:any;
 
@@ -13,14 +14,16 @@ declare let $:any;
 })
 export class ProfileComponent implements OnInit {
 
-	public userDetails = {firstName:"",lastName:"",email:"",companyName:""}
+	public userDetails = {firstName:"",lastName:"",email:"",companyName:""};
+	public userDeatilsGet:boolean = false;
 
-	constructor(private _userService:UserService, private toastr:ToastrService, private _location: Location) {
-		$(".loading").css("display","block"); 
+	constructor(private router:Router, private _progressService:NgProgressService, private _userService:UserService, private toastr:ToastrService, private _location: Location) {
+		this._progressService.start();
 		this._userService.getSingleUser().subscribe(
 			response => {
 				if(response.status){
-					$(".loading").css("display","none");
+					this._progressService.done();
+					this.userDeatilsGet = true;
 					this.userDetails.firstName = response.user.first_name;
 					this.userDetails.lastName = response.user.last_name;
 					this.userDetails.companyName = response.user.company_name;
@@ -28,9 +31,16 @@ export class ProfileComponent implements OnInit {
 				}
 			},
 			error => {
-				console.log(error)
+				let self = this;
+				if (error.status === 401) {
+					this.toastr.error("Login Session expired");
+					localStorage.clear();
+					setTimeout(function () {
+						self.router.navigateByUrl("login");
+					}, 2000);
+				}
 			}
-		);
+			);
 	}
 
 	/* Function that will send back to previous location */
@@ -57,9 +67,16 @@ export class ProfileComponent implements OnInit {
 					}
 				},
 				error => {
-					console.log(error)
+					let self = this;
+					if (error.status === 401) {
+						this.toastr.error("Login Session expired");
+						localStorage.clear();
+						setTimeout(function () {
+							self.router.navigateByUrl("login");
+						}, 2000);
+					}
 				}
-			);
+				);
 		}
 	}
 

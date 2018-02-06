@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/users/user.service';
-
+import { NgProgressService } from 'ngx-progressbar';
 declare var $:any;
 
 @Component({
@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
 	public userDetails = { firstName:"", lastName:"", email:"", password:"", confirmPassword:"", company_name:"" };
 	public termsConditions:boolean = false;
 
-	constructor(private _location: Location, private toastr:ToastrService, private router:Router, private _userService:UserService) { 
+	constructor(private _progressService:NgProgressService, private _location: Location, private toastr:ToastrService, private router:Router, private _userService:UserService) { 
 
 	}	
 
@@ -29,11 +29,11 @@ export class RegisterComponent implements OnInit {
 	public registerUser(){
 		let detailsStatus = this.validateDetails(this.userDetails);
 		if(detailsStatus){
-			$("body").find(".loading").show();
+			$("#overlay").show();
+			this._progressService.start();
 			this._userService.registerUser(this.userDetails).subscribe(
 				response => {
 					if(response.status){
-						$("body").find(".loading").hide();
 						this.toastr.success('Account created successfully. Please Login !!');	
 						this.router.navigate(['/login']);
 					} else {
@@ -47,8 +47,19 @@ export class RegisterComponent implements OnInit {
 							this.toastr.error(response.message);
 						}
 					}
+					this._progressService.done();
+					$("#overlay").hide();
 				},
-				error => { console.log(error); }
+				error => { 
+					let self = this;
+					if (error.status === 401) {
+						this.toastr.error("Login Session expired");
+						localStorage.clear();
+						setTimeout(function () {
+							self.router.navigateByUrl("login");
+						}, 2000);
+					}
+				}
 				);
 		}
 	}

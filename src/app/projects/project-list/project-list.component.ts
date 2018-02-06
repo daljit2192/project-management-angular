@@ -4,7 +4,9 @@ import { ProjectService } from '../../services/projects/project.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/users/user.service';
-
+import { NgProgressService } from 'ngx-progressbar';
+import { DatePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 declare let $:any;
 
 @Component({
@@ -18,7 +20,8 @@ export class ProjectListComponent implements OnInit {
 	public projectDetails:boolean;
 	public noProjectFound:boolean;
 	public currentProjectHandle:string;
-	constructor(private toastr:ToastrService, private _projectService:ProjectService, private router:Router) {
+	today = Date.now();
+	constructor(private _progressService:NgProgressService, private toastr:ToastrService, private _projectService:ProjectService, private router:Router) {
 		this.getAllProjects();
 	}
 
@@ -26,21 +29,30 @@ export class ProjectListComponent implements OnInit {
 
 	/* Function that will get all projects of the current user and also projects which are asigned to login user */
 	public getAllProjects(){
-		$(".loading").css("display","block");
+		this._progressService.start();
 		this._projectService.getAllProjects().subscribe(
 			response=>{
+				
 				if(response.status){
-					$(".loading").css("display","none");
+					this._progressService.done();
 					this.projectDetails = true;
 					this.projects = response.projects;
 				} else {
-					$(".loading").css("display","none");
+					this._progressService.done();
 					this.projectDetails = false;
 					this.noProjectFound = true;
+					alert()
 				}
 			},
 			error=>{
-
+				let self = this;
+				if (error.status === 401) {
+                    this.toastr.error("Login Session expired");
+                    localStorage.clear();
+                    setTimeout(function () {
+                        self.router.navigateByUrl("login");
+                    }, 2000);
+                }
 			},
 			);
 	}
@@ -63,7 +75,14 @@ export class ProjectListComponent implements OnInit {
 				}
 			},
 			error=>{
-
+				let self = this;
+				if (error.status === 401) {
+                    this.toastr.error("Login Session expired");
+                    localStorage.clear();
+                    setTimeout(function () {
+                        self.router.navigateByUrl("login");
+                    }, 2000);
+                }
 			},
 			)
 	}

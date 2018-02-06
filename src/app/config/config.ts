@@ -1,5 +1,4 @@
 export var apiBaseUrl = 'http://localhost:8000';
-// export var apiBaseUrl = 'http://api.uimatic.com';
 export var apiRoutes = {
     user: {
         addNewUser: apiBaseUrl + "/api/user",
@@ -17,6 +16,12 @@ export var apiRoutes = {
         getSingleProject: apiBaseUrl + "/api/project",
         updateProject: apiBaseUrl + "/api/project/update",
         deleteProject: apiBaseUrl + "/api/project"
+    },
+    task:{
+        getPriority:apiBaseUrl + "/api/task/priorities",
+        addTask:apiBaseUrl + "/api/task",
+        getTasks:apiBaseUrl + "/api/tasks",
+        getSingleTask:apiBaseUrl + "/api/task/"
     },
     status:{
         getAllStatuses:apiBaseUrl + "/api/statuses"
