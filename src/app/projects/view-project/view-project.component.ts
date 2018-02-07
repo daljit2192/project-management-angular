@@ -32,7 +32,7 @@ export class ViewProjectComponent implements OnInit {
 	public viewProjectStatus:boolean = false;
 	public viewTaskStatus:boolean = true;
 	public noTaskFound:boolean = true;
-	public taskDetails = { name:"", description:"", tags:"", created_by:"",created_at:"", project_id:0, status:1, priority:1,priority_value:"",users:"", statuses:{} };
+	public taskDetails = { id:0, name:"", description:"", tags:"", created_by:0,created_by_value:"", created_at:"", project_id:0, status:1, priority:1,priority_value:"",users:"", statuses:{} };
 	public tasks = [];
 	public priorities = [];
 	public searchTask:any;	
@@ -55,6 +55,9 @@ export class ViewProjectComponent implements OnInit {
 		$("#description").Editor({
 			status_bar:false, 'block_quote':false,ol:false, ul:false, undo:false, redo:false, hr_line:false, strikeout:false, source:false, rm_format:false, print:false, splchars:false, togglescreen:false, select_all:false, indent:false, outdent:false, insert_table:false, insert_link:false, unlink:false, insert_img:false
 		});
+		$("#_task_description").Editor({
+			status_bar:false, 'block_quote':false,ol:false, ul:false, undo:false, redo:false, hr_line:false, strikeout:false, source:false, rm_format:false, print:false, splchars:false, togglescreen:false, select_all:false, indent:false, outdent:false, insert_table:false, insert_link:false, unlink:false, insert_img:false
+		});
 		$(".comments").Editor({
 			status_bar:false, 'block_quote':false,ol:false, ul:false, undo:false, redo:false, hr_line:false, strikeout:false, source:false, rm_format:false, print:false, splchars:false, togglescreen:false, select_all:false, indent:false, outdent:false, insert_table:false, insert_link:false, unlink:false, insert_img:false
 		});
@@ -65,6 +68,7 @@ export class ViewProjectComponent implements OnInit {
 		});
 	}
 
+	/* Function will get all details of project based on handle value inside url */
 	public getProjectByHandle(){
 		this._progressService.start();
 		this._projectService.getSingleProject(this.router.url.split("/")[4]).subscribe(
@@ -89,6 +93,7 @@ export class ViewProjectComponent implements OnInit {
 			);
 	}
 
+	/* Function will fill project details into projectDetails variable after fetching from database */
 	public setProjectDetails(response:any){
 		this.projectDetails.id = response.project.id;
 		this.projectDetails.name = response.project.name;
@@ -97,11 +102,12 @@ export class ViewProjectComponent implements OnInit {
 		this.projectDetails.statusValue = response.project.statuses[0].name;
 		this.projectDetails.privacy_status = response.project.privacy_status;
 		this.projectDetails.description = response.project.description;
-		this.projectDetails.created_by = response.project.user[0].first_name+ " "+ response.project.user[0].last_name;
+		this.projectDetails.created_by = response.project.user[0].first_name+" "+ response.project.user[0].last_name;
 		$("body").find("._project_description").append(this.projectDetails.description);
 		this.projectAssignees = response.project.assignees;
 	}
 
+	/* Function will get all the statuses from the databse */
 	public getStatus(){
 		this._projectService.getAllStatuses().subscribe(
 			response=>{
@@ -170,6 +176,8 @@ export class ViewProjectComponent implements OnInit {
 			);
 	}
 
+
+	/* Function will save task into the database */
 	public saveTask(){
 		if(this.taskDetails.name==""){
 			this.toastr.error("Please fill name of task");
@@ -178,7 +186,7 @@ export class ViewProjectComponent implements OnInit {
 			this.taskDetails.tags = $("#taskTags").val();
 			this.taskDetails.project_id = this.projectDetails.id;
 			if ($("select[name='assignees']").val() !== null){
-	            this.taskDetails.users = $("select[name='assignees']").val().join(",");
+				this.taskDetails.users = $("select[name='assignees']").val().join(",");
 			}
 
 			this._taskService.addTask(this.taskDetails).subscribe(
@@ -186,7 +194,7 @@ export class ViewProjectComponent implements OnInit {
 					if(response.status){
 						this.tasks.push(response.tasks);
 						this.toastr.success(response.message);
-						$("#deleteModal").modal("hide");
+						$("#taskModal").modal("hide");
 					}
 				},
 				error=>{}
@@ -194,22 +202,94 @@ export class ViewProjectComponent implements OnInit {
 		}
 	}
 
+	/* Function will update task details into the database */
+	public updateTask(){
+		if(this.taskDetails.name==""){
+			this.toastr.error("Please fill name of task");
+		} else {
+			this.taskDetails.description = $("#description").closest("div").find(".Editor-container .Editor-editor").html();
+			this.taskDetails.tags = $("#taskTags").val();
+			this.taskDetails.project_id = this.projectDetails.id;
+			if ($("select[name='assignees']").val() !== null){
+				this.taskDetails.users = $("select[name='assignees']").val().join(",");
+			}
+
+			this._taskService.updateTask(this.taskDetails).subscribe(
+				response=>{
+					if(response.status){
+						$("body").find(".task_"+this.taskDetails.id).find("._task_name").text("").text(response.tasks.name);
+						this.toastr.success(response.message);
+						$("#taskModal").modal("hide");
+					}
+				},
+				error=>{}
+				);
+		}
+	}
+
+	/* Function will get all details of task based on id of task */
 	public getTaskDetails(taskId){
-		this.viewTaskStatus = false;
-		this.showSidebar = !this.showSidebar;
+		$("#overlay").show();
 		this._taskService.getSingleTask(taskId).subscribe(
 			response=>{
 				if(response.status){
 					this._taskSharedService.set_task(JSON.stringify(response.task));
 					this.viewTaskStatus = true;
+					this.taskDetails.id = response.task[0].id;
 					this.taskDetails.name = response.task[0].name;
-					this.taskDetails.created_by = response.task[0].user.full_name;
+					this.taskDetails.created_by_value = response.task[0].user.full_name;
+					this.taskDetails.created_by = response.task[0].created_by;
 					this.taskDetails.created_at = response.task[0].created_at;
 					this.taskDetails.priority_value = response.task[0].priority[0].name;
+					this.setTaskAssignee(response.assignees);
+					$("#overlay").hide();
+					$("body").find("._task_description").closest("div").find(".Editor-container .Editor-editor").html("");
+					$("body").find("._task_description").closest("div").find(".Editor-container .Editor-editor").append(response.task[0].description);
+					return response;
 				}
 			},
 			error=>{}
 			);
+		this.viewTaskStatus = false;
+	}
+
+	/* FUnction to edit a task after fetching its details with respect to taskid */
+	public editTask(taskId){
+		this.getTaskDetails(taskId);
+	}
+
+	/* Function will set assignees in the select2 after applying loop */
+	public setTaskAssignee(assignees){
+		if(assignees.length>0){
+			let assigneeIds = [];
+			assignees.forEach(function(assignee){
+				assigneeIds.push(assignee.user_id);
+			});
+			$("select[name='assignees']").val(assigneeIds).select2({
+				tags: false,
+				theme: "bootstrap",
+				width:"82.7%"
+			});
+		} else {
+			$("select[name='assignees']").val([]).select2({
+				tags: false,
+				theme: "bootstrap",
+				width:"82.7%",
+				placeholder:"Select assignees for task"
+			});
+		}
+	}
+
+	/* Function will clear all fields of form to add new task */
+	public clearFields(){
+		$("body").find("._task_description").closest("div").find(".Editor-container .Editor-editor").html("");
+		$("select[name='assignees']").val([]).select2({
+			tags: false,
+			theme: "bootstrap",
+			width:"82.7%",
+			placeholder:"Select assignees for task"
+		});
+		this.taskDetails = { id:0, name:"", description:"", tags:"", created_by:0, created_by_value:"",created_at:"", project_id:0, status:1, priority:1,priority_value:"",users:"", statuses:{} };
 	}
 
 }

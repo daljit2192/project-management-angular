@@ -40,7 +40,7 @@
 			<div>
 				<img src="assets/images/avatar-1.jpg" class="img-responsive rounded-circle" alt="user">
 				<div class="wid-u-info">
-					<h5 class="mt-0 m-b-5 font-16">{{projectDetails.created_by}}</h5>
+					<h5 class="mt-0 m-b-5 font-16">{{projectDetails.created_by_value}}</h5>
 					<!-- <p class="text-muted m-b-5 font-13">{{projectDetails.user[0].email}}</p> -->
 					<small class="text-warning"><b>Creator</b></small>
 				</div>
@@ -91,16 +91,16 @@
                     <div id="collapseOne" style="display: block;" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                         <div class="panel-body">
                             <ul class="pm-task-lst">
-                                <li *ngFor = "let task of tasks | namefilter:searchTask | priorityfilter:priorityFilter; ">
+                                <li *ngFor = "let task of tasks | namefilter:searchTask | priorityfilter:priorityFilter; " class="task_{{task.id}}">
                                     <div class="pull-left">
                                         <a style="cursor: pointer;" class="content">
-                                            <span style="cursor:pointer" class="closebtn" (click)="getTaskDetails(task.id)"> {{task.name}}</span>
+                                            <span style="cursor:pointer" class="closebtn _task_name" (click)="getTaskDetails(task.id);showSidebar=!showSidebar;"> {{task.name}}</span>
                                         </a>
                                         
                                     </div>
                                     <div class="pull-right">
-                                        <i class="fa fa-pencil _task_edit" aria-hidden="true"></i>
-                                        <i class="fa fa-trash-o _task_delete" aria-hidden="true"></i>
+                                        <i class="fa fa-pencil _task_edit" aria-hidden="true" (click) = "editTask(task.id);clearFields();" data-toggle="modal" data-target="#taskModal"></i>
+                                        <i class="fa fa-trash-o _task_delete" aria-hidden="true" (click) = "deleteTask(task.id)"></i>
                                     </div>
                                 </li>
                                 <div id="mySidenav" class="sidenav" [ngClass]="{pm_sidebar_show: showSidebar}">
@@ -136,10 +136,10 @@
 
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-info btn-lg btn-custom w-md waves-effect waves-light" data-toggle="modal" data-target="#deleteModal">New Task</button>
+                        <button type="button" class="btn btn-info btn-lg btn-custom w-md waves-effect waves-light" data-toggle="modal" data-target="#taskModal" (click)="clearFields()">New Task</button>
                     </div>
                      <!-- Modal -->
-                    <div class="modal fade" id="deleteModal" role="dialog">
+                    <div class="modal fade" id="taskModal" role="dialog">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                            <!-- Modal content-->
                             <div class="modal-content">
@@ -157,7 +157,7 @@
                                         <div class="form-group row">
                                             <label for="Description" class="col-sm-2 col-form-label">Description</label>
                                             <div class="col-sm-10 editor-model">
-                                                <textarea class="form-control" id="description" rows="1" placeholder="descriptional(optional)"></textarea>
+                                                <textarea class="form-control" id="_task_description" class="_task_description" rows="1" placeholder="descriptional(optional)"></textarea>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -187,7 +187,12 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" style="cursor: pointer;" (click) = "saveTask()">Save Task</button>
+                                    <div *ngIf = "taskDetails.id != 0">
+                                        <button type="submit" class="btn btn-primary" style="cursor: pointer;" (click) = "updateTask()">Update Task</button>
+                                    </div>
+                                    <div *ngIf = "taskDetails.id == 0">
+                                        <button type="submit" class="btn btn-primary" style="cursor: pointer;" (click) = "saveTask()">Save Task</button>
+                                    </div>
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>

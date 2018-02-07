@@ -19,6 +19,10 @@ export class TaskService {
         return this.http.post(apiRoutes.task.addTask,JSON.stringify(taskDetails), {headers: this.header}).map((response: Response) => response.json());
     }
 
+    public updateTask(taskDetails:any){
+        return this.http.post(apiRoutes.task.updateTask,JSON.stringify(taskDetails), {headers: this.header}).map((response: Response) => response.json());
+    }
+
     public getTasks(projectId:any){
         return this.http.get(apiRoutes.task.getTasks+"/"+projectId, {headers: this.header}).map((response: Response) => response.json());
     }

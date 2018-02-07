@@ -20,6 +20,7 @@ export var apiRoutes = {
     task:{
         getPriority:apiBaseUrl + "/api/task/priorities",
         addTask:apiBaseUrl + "/api/task",
+        updateTask:apiBaseUrl + "/api/task",
         getTasks:apiBaseUrl + "/api/tasks",
         getSingleTask:apiBaseUrl + "/api/task/"
     },
