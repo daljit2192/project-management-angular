@@ -100,7 +100,7 @@
                                     </div>
                                     <div class="pull-right">
                                         <i class="fa fa-pencil _task_edit" aria-hidden="true" (click) = "editTask(task.id);clearFields();" data-toggle="modal" data-target="#taskModal"></i>
-                                        <i class="fa fa-trash-o _task_delete" aria-hidden="true" (click) = "deleteTask(task.id)"></i>
+                                        <i class="fa fa-trash-o _task_delete" aria-hidden="true" data-toggle="modal" data-target="#deleteTask" (click) = "taskDetails.id = task.id "></i>
                                     </div>
                                 </li>
                                 <div id="mySidenav" class="sidenav" [ngClass]="{pm_sidebar_show: showSidebar}">
@@ -163,8 +163,7 @@
                                         <div class="form-group">
                                             <label for="assignee" class="col-sm-2 col-form-label">Assignees</label>
                                             <select class="form-control select2-multiple select2-hidden-accessible assignees" id="assignees" name="assignees" multiple="" tabindex="-1" aria-hidden="true">
-                                                <option *ngFor = "let user of users" [value] = "user.id">
-                                                    {{user.id}} {{user.first_name}}
+                                                <option *ngFor = "let user of users" [value] = "user.id">{{user.first_name}}
                                                 </option>
                                             </select>
                                         </div>
@@ -212,5 +211,26 @@
             </div>
         </div>
         <!-- end row -->
+    </div>
+</div>
+
+<div id="deleteTask" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+    <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Warning !!</h4>
+            </div>
+            <div class="modal-body">
+                <p>Deleting project will delete its assignees also, are you sure you want to continue ??</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" (click) = "deleteTask()">Continue</button>
+            </div>
+        </div>
+
     </div>
 </div>

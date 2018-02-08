@@ -292,4 +292,14 @@ export class ViewProjectComponent implements OnInit {
 		this.taskDetails = { id:0, name:"", description:"", tags:"", created_by:0, created_by_value:"",created_at:"", project_id:0, status:1, priority:1,priority_value:"",users:"", statuses:{} };
 	}
 
+	public deleteTask(taskId){
+		this._taskService.deleteTask(this.taskDetails.id).subscribe(
+			response => {
+				console.log($("body").find(".task_"+this.taskDetails.id))
+				$("body").find(".task_"+this.taskDetails.id).remove();
+				this.toastr.success("Task deleted successfully");
+			},
+			error => {},
+		)
+	}
 }

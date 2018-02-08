@@ -20,7 +20,10 @@ export class TaskService {
     }
 
     public updateTask(taskDetails:any){
-        return this.http.post(apiRoutes.task.updateTask,JSON.stringify(taskDetails), {headers: this.header}).map((response: Response) => response.json());
+        return this.http.patch(apiRoutes.task.updateTask,JSON.stringify(taskDetails), {headers: this.header}).map((response: Response) => response.json());
+    }
+    public deleteTask(taskId:any){
+        return this.http.delete(apiRoutes.task.deleteTask+"/"+taskId, {headers: this.header}).map((response: Response) => response.json());
     }
 
     public getTasks(projectId:any){
