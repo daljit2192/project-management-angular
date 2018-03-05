@@ -1,9 +1,8 @@
-import {Component, Injectable, Input, Output, EventEmitter} from '@angular/core'
+import {Component, Injectable, Input, Output, EventEmitter} from '@angular/core';
 
 @Injectable()
 export class TaskSharedService {
     @Output() currentTask: EventEmitter<any> = new EventEmitter();
-    @Output() dataChangeObserver: EventEmitter<any> = new EventEmitter();
     data  = "";
     constructor() {
     }

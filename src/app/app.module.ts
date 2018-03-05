@@ -21,13 +21,15 @@ import { ChangePasswordComponent } from './user/change-password/change-password.
 import { AddProjectComponent } from './projects/add-project/add-project.component';
 import { EditProjectComponent } from './projects/edit-project/edit-project.component';
 import { ViewProjectComponent } from './projects/view-project/view-project.component';
+import { CommentsComponent } from './comments/comments.component';
 
 /* Custom services */
 import { UserService } from './services/users/user.service';
 import { ProjectService } from './services/projects/project.service';
 import { TaskService } from './services/tasks/task.service';
 import { TaskSharedService } from './services/tasks/task.shared';
-import { CommentsComponent } from './comments/comments.component';
+import { CommentsService } from './services/comments/comments.service';
+import { NotificationService } from './services/notifications/notification.service';
 import { NameFilterPipe } from './pipes/name.filter.pipe';
 import { PriorityFilterPipe } from './pipes/priority.filter.pipe';
 
@@ -82,6 +84,8 @@ const appRoutes: Routes = [
     ProjectService,
     TaskService,
     TaskSharedService,
+    CommentsService,
+    NotificationService,
     AuthGuard
     ],
     bootstrap: [AppComponent]

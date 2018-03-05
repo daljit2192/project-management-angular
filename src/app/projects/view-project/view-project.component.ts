@@ -1,9 +1,10 @@
-import { Component, OnInit, AfterViewInit, Output } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 import { ProjectService } from '../../services/projects/project.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/users/user.service';
+import { CommentsService } from '../../services/comments/comments.service';
 import { TaskService } from '../../services/tasks/task.service';
 import { TaskSharedService } from '../../services/tasks/task.shared';
 import { NgProgressService } from 'ngx-progressbar';
@@ -21,9 +22,12 @@ declare var $:any;
 export class ViewProjectComponent implements OnInit {
 
 	@Output()
-	public singleTask:any;
+	public type:string = "tasks";
+
+	@Output()
+	public sourceId:string;
 	
-	public projectDetails = {id:0, name:"", handle:"", status:1, statusValue:"", privacy_status:0, description:"", users:"", created_by:"" };
+	public projectDetails = {id:0, name:"", handle:"",email:"", status:1, statusValue:"", privacy_status:0, description:"", users:"", created_by:"" };
 	public users = [];
 	public projectAssignees = [];
 	public statuses = [];
@@ -38,7 +42,7 @@ export class ViewProjectComponent implements OnInit {
 	public searchTask:any;	
 	public priorityFilter:any;	
 
-	constructor(private _taskService:TaskService, private _taskSharedService:TaskSharedService, private _progressService:NgProgressService, private _userService:UserService, private router:Router, private _location:Location, private _projectService:ProjectService, private toastr:ToastrService) { 
+	constructor(private _commentsService:CommentsService, private _taskService:TaskService, private _taskSharedService:TaskSharedService, private _progressService:NgProgressService, private _userService:UserService, private router:Router, private _location:Location, private _projectService:ProjectService, private toastr:ToastrService) { 
 		this.getAllUsers();
 		this.getProjectByHandle();
 		this.getStatus();
@@ -99,6 +103,7 @@ export class ViewProjectComponent implements OnInit {
 		this.projectDetails.name = response.project.name;
 		this.projectDetails.handle = response.project.handle;
 		this.projectDetails.status = response.project.status;
+		this.projectDetails.email = response.project.user[0].email;
 		this.projectDetails.statusValue = response.project.statuses[0].name;
 		this.projectDetails.privacy_status = response.project.privacy_status;
 		this.projectDetails.description = response.project.description;
@@ -161,7 +166,6 @@ export class ViewProjectComponent implements OnInit {
 		this._userService.getAllUsers().subscribe(
 			response=>{
 				this.users = response.users;
-
 			},
 			error=>{
 				let self = this;
@@ -235,12 +239,7 @@ export class ViewProjectComponent implements OnInit {
 				if(response.status){
 					this._taskSharedService.set_task(JSON.stringify(response.task));
 					this.viewTaskStatus = true;
-					this.taskDetails.id = response.task[0].id;
-					this.taskDetails.name = response.task[0].name;
-					this.taskDetails.created_by_value = response.task[0].user.full_name;
-					this.taskDetails.created_by = response.task[0].created_by;
-					this.taskDetails.created_at = response.task[0].created_at;
-					this.taskDetails.priority_value = response.task[0].priority[0].name;
+					this.setTaskDetails(response.task);
 					this.setTaskAssignee(response.assignees);
 					$("#overlay").hide();
 					$("body").find("._task_description").closest("div").find(".Editor-container .Editor-editor").html("");
@@ -251,6 +250,16 @@ export class ViewProjectComponent implements OnInit {
 			error=>{}
 			);
 		this.viewTaskStatus = false;
+	}
+
+	public setTaskDetails(task){
+		this.taskDetails.id = task[0].id;
+		this.sourceId = task[0].id;
+		this.taskDetails.name = task[0].name;
+		this.taskDetails.created_by_value = task[0].user.full_name;
+		this.taskDetails.created_by = task[0].created_by;
+		this.taskDetails.created_at = task[0].created_at;
+		this.taskDetails.priority_value = task[0].priority[0].name;
 	}
 
 	/* FUnction to edit a task after fetching its details with respect to taskid */
@@ -295,11 +304,10 @@ export class ViewProjectComponent implements OnInit {
 	public deleteTask(taskId){
 		this._taskService.deleteTask(this.taskDetails.id).subscribe(
 			response => {
-				console.log($("body").find(".task_"+this.taskDetails.id))
 				$("body").find(".task_"+this.taskDetails.id).remove();
 				this.toastr.success("Task deleted successfully");
 			},
 			error => {},
-		)
+			)
 	}
 }

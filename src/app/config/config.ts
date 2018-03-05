@@ -25,7 +25,15 @@ export var apiRoutes = {
         getTasks:apiBaseUrl + "/api/tasks",
         getSingleTask:apiBaseUrl + "/api/task/"
     },
+    comment:{
+        addComment:apiBaseUrl + "/api/comment",
+        getComments:apiBaseUrl + "/api/comments"
+    },
     status:{
         getAllStatuses:apiBaseUrl + "/api/statuses"
+    },
+    notification:{
+        getNotifications:apiBaseUrl + "/api/notifications",
+        clearNotification:apiBaseUrl + "/api/notifications"
     }
 }    

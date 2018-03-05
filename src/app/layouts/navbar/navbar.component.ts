@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { NotificationService } from '../../services/notifications/notification.service';
 declare var $:any;
 
 @Component({
@@ -9,16 +9,37 @@ declare var $:any;
 })
 export class NavbarComponent implements OnInit {
 
-	constructor() { 
-
+	public notifications = [];
+	public notificationCount = 0;
+	constructor(private _notificationService:NotificationService) { 
+		this.getNotifications();
 	}
 
-	logout(){
+	public getNotifications(){
+		this._notificationService.getNotifications().subscribe(
+			response=>{
+				if(response.status){
+					this.notificationCount = response.notifications.length;
+					this.notifications = response.notifications;
+				} 
+			},
+			error=>{}
+			);
+	} 
+
+	public clearNotifications(){
+		this.notificationCount = 0
+		this._notificationService.clearNotifications().subscribe(
+			respnse=>{}
+			)
+	}
+
+	public logout(){
 		localStorage.clear();
 		window.location.reload();
 	}
 
-	toggleChildLi($event){
+	public toggleChildLi($event){
 		$($event.target).closest("li").find("._child_ul").slideToggle();
 	}
 

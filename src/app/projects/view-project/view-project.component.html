@@ -40,8 +40,7 @@
 			<div>
 				<img src="assets/images/avatar-1.jpg" class="img-responsive rounded-circle" alt="user">
 				<div class="wid-u-info">
-					<h5 class="mt-0 m-b-5 font-16">{{projectDetails.created_by_value}}</h5>
-					<!-- <p class="text-muted m-b-5 font-13">{{projectDetails.user[0].email}}</p> -->
+					<p class="text-muted m-b-5 font-13">{{projectDetails.email}}</p>
 					<small class="text-warning"><b>Creator</b></small>
 				</div>
 			</div>
@@ -70,7 +69,7 @@
             <div class="form-group col-md-4">
                 <label for="sel1">Filter:</label>
                 <select name="priority_search" class="form-control" id="sel1" [(ngModel)] = "priorityFilter">
-                    <option></option>
+                    <option>Select Priority</option>
                     <option *ngFor = "let status of priorities;" value="{{status.id}}">{{status.name}}</option>
                 </select>
             </div>
@@ -127,9 +126,9 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <app-comments></app-comments>
+                                        <app-comments [type] = "type" [sourceId] = "sourceId"></app-comments>
                                     </ul>
-                                    <div id="x" *ngIf="!viewTaskStatus"></div>
+                                    <div id="loadingImg" *ngIf="!viewTaskStatus"></div>
                                 </div>
                             </ul>
                         </div>

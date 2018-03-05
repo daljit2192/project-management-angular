@@ -4364,7 +4364,7 @@ File: Responsive
     z-index: 9999;
     cursor: pointer;
 }
-#x {
+#loadingImg {
     position: fixed;
     display: block;
     width: 100%;
